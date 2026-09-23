@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lerneinheit: Arrays in Java - Übersicht</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+        }
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .intro-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .intro-section h2 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        /* Interaktive Array-Grafik */
+        .array-graphic-container {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .array-label-top {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .array-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .array-cell {
+            width: 50px;
+            height: 60px;
+            background: #f1f5f9;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .array-cell:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .array-cell.active {
+            background: var(--secondary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .array-cell.active .value, .array-cell.active .index {
+            color: white;
+        }
+        .array-cell .value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        .array-cell .index {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 2px;
+        }
+        .interactive-feedback {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 600;
+            min-height: 24px;
+        }
+        /* Code-Box */
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .keyword { color: #38bdf8; }
+        .type { color: #f472b6; }
+        .string { color: #34d399; }
+        .comment { color: #64748b; font-style: italic; }
+
+        /* Begriffe-Liste */
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .term-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .term-card h4 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+        .term-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        /* Kapitel-Kacheln */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+            border-color: var(--secondary);
+        }
+        .card h3 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        .card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+        .card-btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .card-btn:hover {
+            background: #2563eb;
+        }
+        .card-btn.test-btn {
+            background: var(--accent);
+        }
+        .card-btn.test-btn:hover {
+            background: #059669;
+        }
+        footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Datenstrukturen: Arrays in Java</h1>
+        <p>Interaktive Lerneinheit, Algorithmen und Leistungskontrolle</p>
+    </header>
+
+    <main>
+        <!-- Visuelle Darstellung, Quelltext & Algorithmen -->
+        <section class="intro-section">
+            <h2>Was ist ein Array? (Interaktives Beispiel)</h2>
+            <p>Ein Array speichert mehrere Elemente desselben Datentyps im Speicher. <strong>Klicke auf die Zellen unten</strong>, um zu sehen, wie über den Index auf die einzelnen Werte zugegriffen wird:</p>
+            
+            <div class="array-graphic-container">
+                <div class="array-label-top">Interaktiver Speicher: <code>int[] werte = {42, 17, 99, 0, 5};</code></div>
+                <div class="array-boxes">
+                    <div class="array-cell" onclick="inspectCell(0, 42)"><span class="value">42</span><span class="index">[0]</span></div>
+                    <div class="array-cell" onclick="inspectCell(1, 17)"><span class="value">17</span><span class="index">[1]</span></div>
+                    <div class="array-cell" onclick="inspectCell(2, 99)"><span class="value">99</span><span class="index">[2]</span></div>
+                    <div class="array-cell" onclick="inspectCell(3, 0)"><span class="value">0</span><span class="index">[3]</span></div>
+                    <div class="array-cell" onclick="inspectCell(4, 5)"><span class="value">5</span><span class="index">[4]</span></div>
+                </div>
+                <div class="interactive-feedback" id="feedbackText">💡 Klicke auf ein Kästchen oben, um Details zu sehen.</div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; color: var(--primary); margin-top: 1.5rem;">Kompakter Quelltext & Deklaration</h3>
+            <pre><code><span class="type">int</span>[] werte = <span class="keyword">new</span> <span class="type">int</span>[<span class="string">5</span>]; <span class="comment">// Deklaration & Instanziierung</span>
+werte[0] = <span class="string">42</span>;            <span class="comment">// Zuweisung am Index 0</span>
+<span class="type">int</span> e_erster = werte[0];  <span class="comment">// Zugriff auf das erste Element</span></code></pre>
+
+            <h3 style="font-size: 1.1rem; color: var(--primary); margin-top: 1.5rem;">Standardalgorithmus: Durch ein Array durchzählen</h3>
+            <p>Um jedes Element eines Arrays nacheinander zu verarbeiten (z. B. zur Ausgabe oder Berechnung), nutzt man standardmäßig eine <code>for</code>-Schleife mit <code>.length</code>:</p>
+            <pre><code><span class="comment">// 1. Klassische Zählschleife (mit Index-Zugriff)</span>
+<span class="keyword">for</span> (<span class="type">int</span> i = <span class="string">0</span>; i &lt; werte.<span class="keyword">length</span>; i++) {
+    System.out.println(<span class="string">"Element an Index "</span> + i + <span class="string">": "</span> + werte[i]);
+}
+
+<span class="comment">// 2. Moderne for-each-Schleife (nur zum Lesen)</span>
+<span class="keyword">for</span> (<span class="type">int</span> wert : werte) {
+    System.out.println(<span class="string">"Wert: "</span> + wert);
+}</code></pre>
+
+            <div class="terms-grid">
+                <div class="term-card">
+                    <h4>Index & Zählung</h4>
+                    <p>Die Schleife läuft von <code>i = 0</code> bis <code>i &lt; werte.length</code>, da das letzte Element bei <code>length - 1</code> liegt.</p>
+                </div>
+                <div class="term-card">
+                    <h4>Länge (.length)</h4>
+                    <p>Ermittelt automatisch die Anzahl der Elemente, wodurch der Code flexibel bei unterschiedlich großen Arrays bleibt.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kapitel-Navigation -->
+        <div class="grid-container">
+            <div class="card">
+                <div>
+                    <h3>1. Grundlagen & Erklärung</h3>
+                    <p>Einführung in das Konzept von Arrays, Deklaration, Instanziierung und Schleifen.</p>
+                </div>
+                <a href="Kapitel/Erklärung_Array.html" class="card-btn">Kapitel öffnen 📖</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>2. Min-Max-Algorithmus</h3>
+                    <p>Detaillierte Analyse, wie man den minimalen und maximalen Wert ermittelt.</p>
+                </div>
+                <a href="Kapitel/Min_Max_Algorithmus_Erklärung.html" class="card-btn">Kapitel öffnen 🔍</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>3. Abschlusstest</h3>
+                    <p>Überprüfe dein Wissen anhand von praktischen Aufgaben mit automatischer Auswertung.</p>
+                </div>
+                <a href="Kapitel/Test.html" class="card-btn test-btn">Test starten 🏁</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Informatikunterricht • Digitale Lernmaterialien</p>
+    </footer>
+
+    <script>
+        function inspectCell(index, value) {
+            const cells = document.querySelectorAll('.array-cell');
+            cells.forEach(c => c.classList.remove('active'));
+            cells[index].classList.add('active');
+            
+            const feedback = document.getElementById('feedbackText');
+            feedback.innerHTML = `Ausgewählt: <code>werte[${index}]</code> liefert den Wert <strong>${value}</strong>.`;
+        }
+    </script>
+</body>
+</html>
