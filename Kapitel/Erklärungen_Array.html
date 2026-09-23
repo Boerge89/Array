@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays in Java – Interaktives Lernmodul (Wetterstation)</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        section {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        .highlight-code {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        /* Visualisierung des Arrays */
+        .array-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            justify-content: center;
+        }
+        .array-cell {
+            background: white;
+            border: 2px solid var(--secondary);
+            border-radius: 6px;
+            width: 50px;
+            padding: 6px 2px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .array-cell.active {
+            background-color: #dbeafe;
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        .array-cell input {
+            width: 38px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+        }
+        .array-cell .index-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 3px;
+            display: block;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
+        .playground {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .output-box {
+            margin-top: 10px;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary);
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Arrays in Java verstehen</h1>
+        <p>Interaktives Lehrmodul verknüpft mit dem Quellcode der Wetterstation</p>
+    </header>
+
+    <main>
+        <!-- KAPITEL 1: GRUNDLAGEN & QUELLTEXT-VERKNÜPFUNG -->
+        <section>
+            <h2>1. Was ist ein Array? (Quelltext trifft Speicher)</h2>
+            <p>Ein <strong>Array</strong> ist eine lineare Datenstruktur, die mehrere Elemente desselben Datentyps (z. B. <code>int</code>) in einer festen Reihenfolge speichert. Im Java-Projekt der Wetterstation wird ein Array für die 24 Stunden eines Tages angelegt.</p>
+            
+            <div class="grid-2">
+                <div>
+                    <h3>Java-Quelltext (Aus der Main)</h3>
+                    <pre><code>// 1. Deklaration & Erzeugung (Größe: 24)
+int[] messwerte = new int[24];
+
+// 2. Befüllung per Schleife
+for (int i = 0; i < messwerte.length; i++) {
+    messwerte[i] = (int)(Math.random() * 8 + 20);
+}
+
+// 3. Übergabe an die Wetterstation
+Wetterstation w = new Wetterstation(messwerte);</code></pre>
+                </div>
+                <div>
+                    <h3>Grafische Entsprechung (Das Regal)</h3>
+                    <p>Im Arbeitsspeicher sieht das Array wie eine Aneinanderreihung von nummerierten Fächern aus. Jedes Fach besitzt einen festen Platz – den <strong>Index</strong>.</p>
+                    <div class="highlight-code">
+                        <strong>Regal-Größe (length):</strong> 24 Fächer<br>
+                        <strong>Erstes Fach:</strong> Index <code>[0]</code><br>
+                        <strong>Letztes Fach:</strong> Index <code>[23]</code> (length - 1)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KAPITEL 2: INTERAKTIVES WETTERSTATION-ARRAY -->
+        <section>
+            <h2>2. Interaktives Speicher-Modell</h2>
+            <p>Hier siehst du das Array <code>tag</code> der Wetterstation. Du kannst Werte direkt verändern oder per Zufall generieren. Klicke auf <strong>„Code-Ausführung simulieren“</strong>, um zu sehen, wie die Schleife über das Array läuft.</p>
+            
+            <button onclick="generiereZufallswerte()">🎲 Zufallswerte erzeugen (20–27°C)</button>
+            <button class="btn-success" onclick="simuliereDurchschnitt()">▶️ Durchschnitt & Min/Max berechnen</button>
+
+            <!-- Visuelles Array -->
+            <div class="array-container" id="arrayVisualizer">
+                <!-- Wird per JS befüllt -->
+            </div>
+
+            <div class="playground">
+                <h3>Programmausgabe (Konsolensimulation):</h3>
+                <div class="output-box" id="konsolenOutput">Bereit für die Ausführung...</div>
+            </div>
+        </section>
+
+        <!-- KAPITEL 3: METHODEN & FEHLERQUELLEN -->
+        <section>
+            <h2>3. Zugriff, Methoden & Typische Fallstricke</h2>
+            
+            <div class="grid-2">
+                <div class="playground" style="margin-top:0;">
+                    <h3>Methode: <code>getTemperatur(int pStunde)</code></h3>
+                    <p>Ruft gezielt einen Wert über den Index ab:</p>
+                    <pre><code>public int getTemperatur(int pStunde) {
+    if (pStunde >= 0 && pStunde <= 23) {
+        return tag[pStunde];
+    }
+    return 100000000; // Fehlercode
+}</code></pre>
+                    <label>Stunde wählen (0–23): </label>
+                    <input type="number" id="inputStunde" min="0" max="23" value="5" style="width: 60px; padding: 4px;">
+                    <button onclick="testeGetTemperatur()">Wert abfragen</button>
+                    <div class="output-box" id="outputGetTemp">Ausgabe...</div>
+                </div>
+
+                <div class="playground" style="margin-top:0;">
+                    <h3>Die IndexOutOfBoundsException</h3>
+                    <p>Was passiert bei ungültigen Indizes (z. B. <code>tag[24]</code> oder <code>tag[-1]</code>)?</p>
+                    <pre><code>// Fehlerhafter Zugriff außerhalb der Grenzen:
+// Gültig: 0 bis (tag.length - 1)</code></pre>
+                    <button onclick="testeFehler()" style="background: var(--accent);">Ungültigen Index (24) testen</button>
+                    <div class="output-box" id="outputFehler">Ausgabe...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Array für 24 Stunden initialisieren
+        let messwerte = new Array(24);
+
+        function initialisiereVisualisierung() {
+            const container = document.getElementById('arrayVisualizer');
+            container.innerHTML = '';
+            for (let i = 0; i < 24; i++) {
+                if (isNaN(messwerte[i])) {
+                    messwerte[i] = Math.floor(Math.random() * 8 + 20);
+                }
+                const cell = document.createElement('div');
+                cell.className = 'array-cell';
+                cell.id = `cell_${i}`;
+                cell.innerHTML = `
+                    <input type="number" value="${messwerte[i]}" id="val_${i}" onchange="updateWert(${i})">
+                    <span class="index-label">[${i}]</span>
+                `;
+                container.appendChild(cell);
+            }
+        }
+
+        function generiereZufallswerte() {
+            for (let i = 0; i < 24; i++) {
+                messwerte[i] = Math.floor(Math.random() * 8 + 20);
+                document.getElementById(`val_${i}`).value = messwerte[i];
+            }
+            document.getElementById('konsolenOutput').innerText = "Neue Zufallswerte für 24 Stunden generiert.";
+        }
+
+        function updateWert(index) {
+            const val = parseInt(document.getElementById(`val_${index}`).value);
+            if (!isNaN(val)) {
+                messwerte[index] = val;
+            }
+        }
+
+        function einrahmenZelle(index) {
+            // Alle zurücksetzen
+            for(let i=0; i<24; i++) {
+                document.getElementById(`cell_${i}`).classList.remove('active');
+            }
+            if(index >= 0 && index < 24) {
+                document.getElementById(`cell_${index}`).classList.add('active');
+            }
+        }
+
+        async function simuliereDurchschnitt() {
+            // Werte einlesen
+            for (let i = 0; i < 24; i++) {
+                messwerte[i] = parseInt(document.getElementById(`val_${i}`).value) || 0;
+            }
+
+            let summe = 0;
+            let logText = "Starte Schleife: for (int i = 0; i < tag.length; i++)\n\n";
+            
+            document.getElementById('konsolenOutput').innerText = logText;
+
+            for (let i = 0; i < messwerte.length; i++) {
+                einrahmenZelle(i);
+                summe += messwerte[i];
+                // Kurze Verzögerung für den visuellen Effekt
+                await new Promise(r => setTimeout(r, 60));
+            }
+
+            einrahmenZelle(-1);
+            let durchschnitt = (summe / messwerte.length).toFixed(2);
+
+            // Min & Max ermitteln
+            let minTemp = messwerte[0], maxTemp = messwerte[0];
+            let minStd = 0, maxStd = 0;
+            for (let i = 1; i < messwerte.length; i++) {
+                if (messwerte[i] < minTemp) { minTemp = messwerte[i]; minStd = i; }
+                if (messwerte[i] > maxTemp) { maxTemp = messwerte[i]; maxStd = i; }
+            }
+
+            document.getElementById('konsolenOutput').innerText = 
+                `Schleife beendet (tag.length = ${messwerte.length}).\n` +
+                `----------------------------------------\n` +
+                `✔ Summe aller Messwerte: ${summe}\n` +
+                `📊 Durchschnittstemperatur: ${durchschnitt} °C\n` +
+                `❄️ Kälteste Stunde: ${minStd} Uhr (${minTemp} °C)\n` +
+                `🔥 Wärmste Stunde: ${maxStd} Uhr (${maxTemp} °C)`;
+        }
+
+        function testeGetTemperatur() {
+            const stunde = parseInt(document.getElementById('inputStunde').value);
+            einrahmenZelle(stunde);
+            if (stunde >= 0 && stunde <= 23) {
+                document.getElementById('outputGetTemp').innerText = 
+                    `Aufruf: getTemperatur(${stunde})\n` +
+                    `Bedingung (pStunde >= 0 && pStunde <= 23) ist TRUE.\n` +
+                    `➡️ Rückgabewert: tag[${stunde}] = ${messwerte[stunde]} °C`;
+            } else {
+                document.getElementById('outputGetTemp').innerText = 
+                    `Aufruf: getTemperatur(${stunde})\n` +
+                    `Bedingung ungültig! Rückgabewert: 100000000`;
+            }
+        }
+
+        function testeFehler() {
+            einrahmenZelle(-1);
+            document.getElementById('outputFehler').innerText = 
+                `Versuch, auf tag[24] zuzugreifen:\n` +
+                `❌ Laufzeitfehler in Java!\n` +
+                `java.lang.ArrayIndexOutOfBoundsException: Index 24 out of bounds for length 24\n` +
+                `(Da Indizes von 0 bis 23 laufen, existiert Index 24 nicht!)`;
+        }
+
+        window.onload = function() {
+            initialisiereVisualisierung();
+        };
+    </script>
+</body>
+</html>

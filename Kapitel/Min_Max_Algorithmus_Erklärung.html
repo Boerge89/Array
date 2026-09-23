@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithmus-Training mit Live-Code-Highlighting</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        section {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        
+        /* Code-Box mit Highlight-Funktion */
+        .code-container {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .code-line {
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s, border-left 0.2s;
+        }
+        .code-line.active {
+            background-color: rgba(234, 179, 8, 0.25);
+            border-left: 4px solid var(--warning);
+            color: #fef08a;
+            font-weight: bold;
+        }
+
+        .array-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            justify-content: center;
+        }
+        .array-cell {
+            background: white;
+            border: 2px solid var(--secondary);
+            border-radius: 6px;
+            width: 48px;
+            padding: 6px 2px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .array-cell.current {
+            background-color: #fef3c7;
+            border-color: var(--warning);
+            transform: scale(1.08);
+        }
+        .array-cell.min-found {
+            background-color: #dbeafe;
+            border-color: var(--secondary);
+        }
+        .array-cell.max-found {
+            background-color: #fee2e2;
+            border-color: var(--accent);
+        }
+        .array-cell input {
+            width: 36px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+        }
+        .array-cell .index-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 3px;
+            display: block;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover { background: #2563eb; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
+        .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: #dc2626; }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card h4 { margin: 0 0 5px 0; color: #64748b; font-size: 0.85rem; }
+        .stat-card .value { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        
+        .playground {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .log-box {
+            margin-top: 10px;
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Algorithmen-Debugger: Min & Max in Arrays</h1>
+        <p>Interaktives Lehrmodul mit Live-Quellcode-Markierung</p>
+    </header>
+
+    <main>
+        <!-- INTERAKTIVER SIMULATOR & LIVE-CODE -->
+        <section>
+            <h2>1. Interaktiver Simulator mit Code-Tracking</h2>
+            <p>Klicke auf <strong>„Autom. abspielen“</strong> oder nutze den <strong>Einzelschritt</strong>, um zu beobachten, wie die Schleife durch das Array läuft und welche Zeile im Java-Code gerade aktiv ist.</p>
+            
+            <button onclick="generiereZufallswerte()">🎲 Neue Werte generieren</button>
+            <button class="btn-success" onclick="starteAutoLauf()">▶️ Autom. abspielen</button>
+            <button class="btn-accent" onclick="naechsterSchritt()">⏭️ Einzelschritt</button>
+            <button onclick="resetSimulation()" style="background: #64748b;">🔄 Reset</button>
+
+            <!-- Dashboard -->
+            <div class="dashboard">
+                <div class="stat-card">
+                    <h4>Aktueller Index (i)</h4>
+                    <div class="value" id="dispIndex">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Aktueller Wert</h4>
+                    <div class="value" id="dispWert">-</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--secondary);">
+                    <h4>Minimum</h4>
+                    <div class="value" id="dispMin">-</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--accent);">
+                    <h4>Maximum</h4>
+                    <div class="value" id="dispMax">-</div>
+                </div>
+            </div>
+
+            <!-- Visuelles Array -->
+            <div class="array-container" id="arrayVisualizer"></div>
+
+            <!-- LIVE-CODE-ANZEIGE -->
+            <h3>Aktive Quellcode-Zeile (Debugger-Ansicht):</h3>
+            <div class="code-container" id="codeBox">
+                <div id="cline-1" class="code-line">public void kuehlsteWaermsteStunde() {</div>
+                <div id="cline-2" class="code-line">&nbsp;&nbsp;int minTemperatur = tag[0]; int maxTemperatur = tag[0];</div>
+                <div id="cline-3" class="code-line">&nbsp;&nbsp;int minStunde = 0; int maxStunde = 0;</div>
+                <div id="cline-4" class="code-line">&nbsp;&nbsp;for (int i = 1; i &lt; tag.length; i++) {</div>
+                <div id="cline-5" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;if (tag[i] &lt; minTemperatur) {</div>
+                <div id="cline-6" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minTemperatur = tag[i]; minStunde = i;</div>
+                <div id="cline-7" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+                <div id="cline-8" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;if (tag[i] &gt; maxTemperatur) {</div>
+                <div id="cline-9" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxTemperatur = tag[i]; maxStunde = i;</div>
+                <div id="cline-10" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+                <div id="cline-11" class="code-line">&nbsp;&nbsp;}</div>
+                <div id="cline-12" class="code-line">}</div>
+            </div>
+
+            <div class="playground">
+                <h3>Protokoll:</h3>
+                <div class="log-box" id="logOutput">Bereit. Klicke auf "Einzelschritt" oder "Autom. abspielen".</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let messwerte = new Array(12);
+        let currentIndex = 1;
+        let minTemp, maxTemp, minStunde, maxStunde;
+        let isRunning = false;
+        let timer = null;
+        let subStep = 0; // 0: Schleifen-Check, 1: Min-Check, 2: Max-Check
+
+        function initialisiereWerte() {
+            for (let i = 0; i < 12; i++) {
+                if (isNaN(messwerte[i])) {
+                    messwerte[i] = Math.floor(Math.random() * 15 + 15);
+                }
+            }
+            resetSimulation();
+        }
+
+        function zeichneArray() {
+            const container = document.getElementById('arrayVisualizer');
+            container.innerHTML = '';
+            for (let i = 0; i < messwerte.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'array-cell';
+                if (i === minStunde) cell.classList.add('min-found');
+                if (i === maxStunde) cell.classList.add('max-found');
+                if (i === currentIndex && isRunning || i === currentIndex && subStep > 0) {
+                    cell.classList.add('current');
+                }
+
+                cell.innerHTML = `
+                    <input type="number" value="${messwerte[i]}" id="val_${i}" onchange="updateWert(${i})">
+                    <span class="index-label">[${i}]</span>
+                `;
+                container.appendChild(cell);
+            }
+        }
+
+        function highlightLine(lineNum) {
+            for (let i = 1; i <= 12; i++) {
+                const el = document.getElementById(`cline-${i}`);
+                if (el) el.classList.remove('active');
+            }
+            if (lineNum > 0) {
+                const activeEl = document.getElementById(`cline-${lineNum}`);
+                if (activeEl) {
+                    activeEl.classList.add('active');
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+        }
+
+        function generiereZufallswerte() {
+            stopAuto();
+            for (let i = 0; i < 12; i++) {
+                messwerte[i] = Math.floor(Math.random() * 15 + 15);
+            }
+            resetSimulation();
+        }
+
+        function updateWert(index) {
+            const val = parseInt(document.getElementById(`val_${index}`).value);
+            if (!isNaN(val)) {
+                messwerte[index] = val;
+            }
+            resetSimulation();
+        }
+
+        function resetSimulation() {
+            stopAuto();
+            for (let i = 0; i < 12; i++) {
+                const input = document.getElementById(`val_${i}`);
+                if (input) messwerte[i] = parseInt(input.value) || messwerte[i];
+            }
+
+            currentIndex = 1;
+            subStep = 0;
+            minTemp = messwerte[0];
+            maxTemp = messwerte[0];
+            minStunde = 0;
+            maxStunde = 0;
+
+            document.getElementById('dispIndex').innerText = "-";
+            document.getElementById('dispWert').innerText = "-";
+            document.getElementById('dispMin').innerText = `${minTemp}°C [0]`;
+            document.getElementById('dispMax').innerText = `${maxTemp}°C [0]`;
+            document.getElementById('logOutput').innerText = `Bereit. Initialisierung abgeschlossen (Zeile 2-3).`;
+            
+            highlightLine(2);
+            zeichneArray();
+        }
+
+        function naechsterSchritt() {
+            // Werte aus Inputs einlesen
+            for (let i = 0; i < 12; i++) {
+                const input = document.getElementById(`val_${i}`);
+                if (input) messwerte[i] = parseInt(input.value) || messwerte[i];
+            }
+
+            if (currentIndex >= messwerte.length) {
+                stopAuto();
+                highlightLine(12);
+                document.getElementById('logOutput').innerText = `✅ Algorithmus beendet! Kälteste: ${minStunde} Uhr, Wärmste: ${maxStunde} Uhr.`;
+                return;
+            }
+
+            let aktuellerWert = messwerte[currentIndex];
+            document.getElementById('dispIndex').innerText = currentIndex;
+            document.getElementById('dispWert').innerText = aktuellerWert;
+
+            if (subStep === 0) {
+                // Schleifenkopf prüfen
+                highlightLine(4);
+                document.getElementById('logOutput').innerText = `Prüfe Schleifenbedingung: i = ${currentIndex} (< ${messwerte.length}) ➔ TRUE. Gehe in den Rumpf.`;
+                subStep = 1;
+            } else if (subStep === 1) {
+                // Min-Prüfung (Zeile 5-7)
+                highlightLine(5);
+                let logText = `Prüfe Minimum: tag[${currentIndex}] (${aktuellerWert}) < minTemp (${minTemp})?\n`;
+                if (aktuellerWert < minTemp) {
+                    minTemp = aktuellerWert;
+                    minStunde = currentIndex;
+                    highlightLine(6);
+                    logText += `  ➔ JA! minTemperatur auf ${minTemp} aktualisiert.`;
+                } else {
+                    logText += `  ➔ NEIN. Wert ist größer oder gleich.`;
+                }
+                document.getElementById('dispMin').innerText = `${minTemp}°C [${minStunde}]`;
+                document.getElementById('logOutput').innerText = logText;
+                subStep = 2;
+            } else if (subStep === 2) {
+                // Max-Prüfung (Zeile 8-10)
+                highlightLine(8);
+                let logText = `Prüfe Maximum: tag[${currentIndex}] (${aktuellerWert}) > maxTemp (${maxTemp})?\n`;
+                if (aktuellerWert > maxTemp) {
+                    maxTemp = aktuellerWert;
+                    maxStunde = currentIndex;
+                    highlightLine(9);
+                    logText += `  ➔ JA! maxTemperatur auf ${maxTemp} aktualisiert.`;
+                } else {
+                    logText += `  ➔ NEIN. Wert ist kleiner oder gleich.`;
+                }
+                document.getElementById('dispMax').innerText = `${maxTemp}°C [${maxStunde}]`;
+                document.getElementById('logOutput').innerText = logText;
+                
+                // Nächster Index
+                currentIndex++;
+                subStep = 0;
+            }
+
+            zeichneArray();
+        }
+
+        function starteAutoLauf() {
+            if (isRunning) return;
+            if (currentIndex >= messwerte.length) resetSimulation();
+            isRunning = true;
+            timer = setInterval(() => {
+                if (currentIndex < messwerte.length) {
+                    naechsterSchritt();
+                } else {
+                    stopAuto();
+                }
+            }, 700);
+        }
+
+        function stopAuto() {
+            isRunning = false;
+            if (timer) clearInterval(timer);
+        }
+
+        window.onload = function() {
+            initialisiereWerte();
+        };
+    </script>
+</body>
+</html>

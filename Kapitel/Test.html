@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leistungsüberprüfung: Arrays in Java (Ausführliche Lösungen)</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        /* Zentraler Punktestand oben */
+        .central-tracker {
+            display: inline-flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        section {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        .step-container {
+            display: none;
+        }
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .points-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .progress-indicator {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        label:hover {
+            background: #f1f5f9;
+            border-color: var(--secondary);
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        button:hover { background: #2563eb; }
+        button.secondary-btn {
+            background: #64748b;
+        }
+        button.secondary-btn:hover { background: #475569; }
+        
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        .summary-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .solution-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .correct-text { color: var(--success); font-weight: bold; }
+        .incorrect-text { color: var(--accent); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Leistungsüberprüfung: Arrays in Java</h1>
+        <p>Wissenstest mit ausführlicher Auswertung (14 Punkte)</p>
+        <!-- Zentraler Punktestand oben -->
+        <div class="central-tracker">
+            <span id="trackerFrage">Frage: 1 von 7</span>
+            <span>•</span>
+            <span id="trackerPunkte">Erreichte Punkte: 0 / 14</span>
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <form id="quizForm" onsubmit="return false;">
+                
+                <!-- SCHRITT 1: Aufgabe 1 -->
+                <div class="step-container active" id="step-1">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 1 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Grundverständnis & Indizierung</h3>
+                    <p>Welche Aussagen über ein Array in Java mit der Deklaration <code>int[] werte = new int[10];</code> treffen zu? <em>(Wähle alle korrekten Optionen)</em></p>
+                    <label><input type="checkbox" name="f1" value="a"> A) Das Array besitzt genau 10 Elemente von Index 0 bis 9.</label>
+                    <label><input type="checkbox" name="f1" value="b"> B) Das erste Element wird über <code>werte[1]</code> angesprochen.</label>
+                    <label><input type="checkbox" name="f1" value="c"> C) Die Größe des Arrays kann im Nachhinein nicht mehr verändert werden.</label>
+                    <label><input type="checkbox" name="f1" value="d"> D) Alle Elemente sind nach der Erstellung automatisch mit dem Wert 0 vorbesetzt.</label>
+                    
+                    <div class="btn-container">
+                        <div></div>
+                        <button type="button" onclick="naechsterSchritt(1)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 2: Aufgabe 2 -->
+                <div class="step-container" id="step-2">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 2 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Code-Analyse (Schleifen-Kopf)</h3>
+                    <p>Betrachte den folgenden Ausschnitt einer Methode zur Ausgabe aller Messwerte eines Arrays:</p>
+                    <pre>public void printRawData(int[] tag) {
+    for (int i = 0; i &lt; ???; i++) {
+        System.out.println("Wert: " + tag[i]);
+    }
+}</pre>
+                    <p>Welcher Ausdruck muss anstelle von <code>???</code> stehen, damit die Schleife das gesamte Array fehlerfrei durchläuft?</p>
+                    <label><input type="radio" name="f2" value="wrong1"> A) <code>tag.length - 1</code></label>
+                    <label><input type="radio" name="f2" value="correct"> B) <code>tag.length</code></label>
+                    <label><input type="radio" name="f2" value="wrong2"> C) <code>tag.size()</code></label>
+                    <label><input type="radio" name="f2" value="wrong3"> D) <code>10</code></label>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(2)">⬅️ Zurück</button>
+                        <button type="button" onclick="naechsterSchritt(2)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 3: Aufgabe 3 -->
+                <div class="step-container" id="step-3">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 3 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Fehlerbehandlung zur Laufzeit</h3>
+                    <p>Was passiert in Java, wenn man versucht, auf ein Array der Länge 10 mit dem Index <code>werte[10]</code> zuzugreifen?</p>
+                    <label><input type="radio" name="f3" value="wrong1"> A) Java gibt automatisch den Wert <code>0</code> zurück.</label>
+                    <label><input type="radio" name="f3" value="correct"> B) Das Programm bricht mit einer <code>ArrayIndexOutOfBoundsException</code> ab.</label>
+                    <label><input type="radio" name="f3" value="wrong2"> C) Das Array wird zur Laufzeit automatisch um einen Platz vergrößert.</label>
+                    <label><input type="radio" name="f3" value="wrong3"> D) Es tritt bereits beim Kompilieren ein Syntaxfehler auf.</label>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(3)">⬅️ Zurück</button>
+                        <button type="button" onclick="naechsterSchritt(3)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 4: Aufgabe 4 -->
+                <div class="step-container" id="step-4">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 4 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Algorithmen & Minimum-Suche</h3>
+                    <p>Warum wird bei der Suche nach dem kleinsten Wert in einem Array als Startwert für das Minimum üblicherweise <code>int min = tag[0];</code> gewählt?</p>
+                    <label><input type="radio" name="f4" value="wrong1"> A) Weil der Index 0 in Java immer die kleinste Zahl enthält.</label>
+                    <label><input type="radio" name="f4" value="correct"> B) Weil man einen realen Vergleichswert direkt aus dem Array benötigt, anstatt eine feste Willkürzahl zu raten.</label>
+                    <label><input type="radio" name="f4" value="wrong2"> C) Weil der Compiler den Startwert ansonsten komplett ignoriert.</label>
+                    <label><input type="radio" name="f4" value="wrong3"> D) Weil die Schleife andernfalls rückwärts laufen müsste.</label>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(4)">⬅️ Zurück</button>
+                        <button type="button" onclick="naechsterSchritt(4)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 5: Aufgabe 5 -->
+                <div class="step-container" id="step-5">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 5 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Zweidimensionale Arrays (Matrizen)</h3>
+                    <p>Wie deklariert und instanziiert man in Java korrekt eine zweidimensionale Tabelle (ein 2D-Array) mit beispielsweise 10 Zeilen und 10 Spalten von Ganzzahlen?</p>
+                    <label><input type="radio" name="f5" value="wrong1"> A) <code>int[][] tabelle = new int(10, 10);</code></label>
+                    <label><input type="radio" name="f5" value="correct"> B) <code>int[][] tabelle = new int[10][10];</code></label>
+                    <label><input type="radio" name="f5" value="wrong2"> C) <code>array int 10x10 tabelle;</code></label>
+                    <label><input type="radio" name="f5" value="wrong3"> D) <code>int[] tabelle = new int[10, 10];</code></label>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(5)">⬅️ Zurück</button>
+                        <button type="button" onclick="naechsterSchritt(5)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 6: Die for-each-Schleife -->
+                <div class="step-container" id="step-6">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 6 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Die for-each-Schleife</h3>
+                    <p>Welche Vorteile bietet eine <code>for-each</code>-Schleife (z. B. <code>for(char vowel : vowels)</code>) im Vergleich zur klassischen Zählschleife bei der reinen Durchmusterung von Arrays?</p>
+                    <label><input type="radio" name="f6" value="wrong1"> A) Man kann während des Durchlaufens gezielt einzelne Elemente im Array löschen.</label>
+                    <label><input type="radio" name="f6" value="correct"> B) Der Code ist kompakter, da man sich nicht explizit um Indizes oder die Abbruchbedingung (.length) kümmern muss.</label>
+                    <label><input type="radio" name="f6" value="wrong2"> C) Sie läuft in Java exakt doppelt so schnell wie eine normale Schleife.</label>
+                    <label><input type="radio" name="f6" value="wrong3"> D) Sie funktioniert ausschließlich bei numerischen Datentypen wie <code>int</code> oder <code>double</code>.</label>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(6)">⬅️ Zurück</button>
+                        <button type="button" onclick="naechsterSchritt(6)">Nächste Frage ➡️</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 7: Arrays von Objekten -->
+                <div class="step-container" id="step-7">
+                    <div class="question-header">
+                        <span class="progress-indicator">Aufgabe 7 von 7</span>
+                        <span class="points-badge">2 Punkte</span>
+                    </div>
+                    <h3>Objekt-Arrays & Methodenaufrufe</h3>
+                    <p>Gegeben sei ein Array von Objekten der Klasse <code>Hund</code> namens <code>meineHunde</code>, wobei jeder Hund die Methode <code>bellen()</code> besitzt. Wie lässt sich der Hund am Index 2 des Arrays bellen lassen?</p>
+                    <label><input type="radio" name="f7" value="wrong1"> A) <code>Hund.bellen(meineHunde[2]);</code></label>
+                    <label><input type="radio" name="f7" value="wrong2"> B) <code>meineHunde.bellen(2);</code></label>
+                    <label><input type="radio" name="f7" value="correct"> C) <code>meineHunde[2].bellen();</code></label>
+                    <label><input type="radio" name="f7" value="wrong3"> D) <code>bellen(meineHunde.get(2));</code></label>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="vorherigerSchritt(7)">⬅️ Zurück</button>
+                        <button type="button" style="background: var(--success);" onclick="testeUndAuswerten()">Test abschließen & auswerten 🏁</button>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 8: Zusammenfassung / Ausführliche Lösungen -->
+                <div class="step-container" id="step-8">
+                    <div class="question-header">
+                        <span class="progress-indicator">Auswertung</span>
+                        <span class="points-badge" id="badgeTotal">0 / 14 Punkte</span>
+                    </div>
+                    <h2>Ergebnis & Ausführliche Lösungen</h2>
+                    <p id="ergebnisIntroText">Du hast den Test abgeschlossen. Hier findest du deine erreichte Punktzahl sowie eine detaillierte Besprechung aller Aufgaben:</p>
+                    
+                    <div class="summary-box" id="summaryDetails">
+                        <!-- Wird per JS befüllt -->
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="button" class="secondary-btn" onclick="resetTest()">🔄 Test wiederholen</button>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <script>
+        function aktualisiereTracker(schritt) {
+            if (schritt <= 7) {
+                document.getElementById('trackerFrage').innerText = `Frage: ${schritt} von 7`;
+            } else {
+                document.getElementById('trackerFrage').innerText = `Auswertung beendet`;
+            }
+            
+            let aktuellePunkte = berechneZwischenstand();
+            document.getElementById('trackerPunkte').innerText = `Aktuelle Tendenz: ${aktuellePunkte} / 14 P.`;
+        }
+
+        function berechneZwischenstand() {
+            let p = 0;
+            const elA = document.querySelector('input[name="f1"][value="a"]');
+            const elB = document.querySelector('input[name="f1"][value="b"]');
+            const elC = document.querySelector('input[name="f1"][value="c"]');
+            const elD = document.querySelector('input[name="f1"][value="d"]');
+
+            if (elA && elB && elC && elD) {
+                const chk_a = elA.checked;
+                const chk_b = elB.checked;
+                const chk_c = elC.checked;
+                const chk_d = elD.checked;
+                if (chk_a && chk_c && chk_d && !chk_b) p += 2;
+                else if ((chk_a && !chk_b) || (chk_c && !chk_b) || (chk_d && !chk_b)) p += 1;
+            }
+
+            for (let i = 2; i <= 7; i++) {
+                const f = document.querySelector(`input[name="f${i}"]:checked`);
+                if (f && f.value === 'correct') {
+                    p += 2;
+                }
+            }
+
+            return p;
+        }
+
+        function zeigeSchritt(schrittNummer) {
+            const schritte = document.querySelectorAll('.step-container');
+            schritte.forEach(s => s.classList.remove('active'));
+            const ziel = document.getElementById(`step-${schrittNummer}`);
+            if (ziel) {
+                ziel.classList.add('active');
+            }
+            aktualisiereTracker(schrittNummer);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function naechsterSchritt(aktuellerSchritt) {
+            zeigeSchritt(aktuellerSchritt + 1);
+        }
+
+        function vorherigerSchritt(aktuellerSchritt) {
+            zeigeSchritt(aktuellerSchritt - 1);
+        }
+
+        function testeUndAuswerten() {
+            let gesamtPunkte = 0;
+            const maxPunkte = 14;
+            let detailsHtml = "";
+
+            // --- Aufgabe 1 ---
+            const elA = document.querySelector('input[name="f1"][value="a"]');
+            const elB = document.querySelector('input[name="f1"][value="b"]');
+            const elC = document.querySelector('input[name="f1"][value="c"]');
+            const elD = document.querySelector('input[name="f1"][value="d"]');
+            
+            let p1 = 0;
+            if (elA && elB && elC && elD) {
+                const chk_a = elA.checked;
+                const chk_b = elB.checked;
+                const chk_c = elC.checked;
+                const chk_d = elD.checked;
+                if (chk_a && chk_c && chk_d && !chk_b) p1 = 2;
+                else if ((chk_a && !chk_b) || (chk_c && !chk_b) || (chk_d && !chk_b)) p1 = 1;
+            }
+            gesamtPunkte += p1;
+            
+            detailsHtml += `
+                <div class="solution-item">
+                    <h4>Aufgabe 1: Grundverständnis & Indizierung <span class="${p1 === 2 ? 'correct-text' : 'incorrect-text'}">(${p1} / 2 Punkte)</span></h4>
+                    <p><strong>Korrekt sind: A, C und D.</strong></p>
+                    <p><em>Erklärung:</em> Arrays in Java sind in ihrer Größe nach der Instanziierung fix und können nicht mehr dynamisch wachsen (C). Die Zählung beginnt immer bei Index 0, weshalb ein Array der Länge 10 die Indizes 0 bis 9 umfasst (A). Das erste Element wird folglich über <code>werte[0]</code> aufgerufen, nicht über <code>werte[1]</code> (daher ist B falsch). Numerische Arrays (wie <code>int</code>) werden bei der Erstellung automatisch mit Nullen vorbelegt (D).</p>
+                </div>`;
+
+            // --- Aufgabe 2 bis 7 ---
+            const erlaeuterungen = {
+                2: {
+                    titel: "Code-Analyse (Schleifen-Kopf)",
+                    korrekt: "B) <code>tag.length</code>",
+                    text: "Die Eigenschaft <code>length</code> (ohne Klammern!) liefert die exakte Anzahl der Elemente eines Arrays. Da Schleifen in Java klassisch mit einem strikt kleiner-Zeichen (<code>i &lt; tag.length</code>) laufen, werden alle Indizes von <code>0</code> bis <code>tag.length - 1</code> fehlerfrei abgearbeitet."
+                },
+                3: {
+                    titel: "Fehlerbehandlung zur Laufzeit",
+                    korrekt: "B) Das Programm bricht mit einer <code>ArrayIndexOutOfBoundsException</code> ab.",
+                    text: "Da ein Array der Länge 10 die Indizes 0 bis 9 bereitstellt, führt ein Zugriff auf Index 10 ins Leere. Java fängt diesen Programmierfehler nicht stumm ab, sondern löst eine Laufzeitausnahme (Exception) aus."
+                },
+                4: {
+                    titel: "Algorithmen & Minimum-Suche",
+                    korrekt: "B) Weil man einen realen Vergleichswert direkt aus dem Array benötigt, anstatt eine feste Willkürzahl zu raten.",
+                    text: "Wenn man das Minimum in einem Array sucht, initialisiert man die Hilfsvariable am besten mit dem ersten Element des Arrays selbst, um Fehler bei positiven oder negativen Zahlenbereichen zu vermeiden."
+                },
+                5: {
+                    titel: "Zweidimensionale Arrays (Matrizen)",
+                    korrekt: "B) <code>int[][] tabelle = new int[10][10];</code>",
+                    text: "Ein zweidimensionales Array (eine Matrix oder Tabelle) wird in Java über doppelte eckige Klammern <code>[][]</code> sowohl beim Datentyp als auch bei der Instanziierung nach dem Schema <code>[Zeilen][Spalten]</code> deklariert."
+                },
+                6: {
+                    titel: "Die for-each-Schleife",
+                    korrekt: "B) Der Code ist kompakter, da man sich nicht explizit um Indizes oder die Abbruchbedingung (.length) kümmern muss.",
+                    text: "Die erweiterte for-Schleife dient dem bequemen Durchlaufen von Datenstrukturen, wenn man nur lesend auf die Elemente zugreift. Man benötigt keine manuelle Zählvariable <code>i</code>."
+                },
+                7: {
+                    titel: "Objekt-Arrays & Methodenaufrufe",
+                    korrekt: "C) <code>meineHunde[2].bellen();</code>",
+                    text: "Über den Indexzugriff <code>meineHunde[2]</code> greift man auf das konkrete Objekt an der dritten Stelle des Arrays zu. Da dieses Objekt die Methode <code>bellen()</code> besitzt, wird der Aufruf direkt angehängt."
+                }
+            };
+
+            for (let i = 2; i <= 7; i++) {
+                let p_i = 0;
+                const f = document.querySelector(`input[name="f${i}"]:checked`);
+                if (f && f.value === 'correct') {
+                    p_i = 2;
+                }
+                gesamtPunkte += p_i;
+                
+                detailsHtml += `
+                    <div class="solution-item">
+                        <h4>Aufgabe ${i}: ${erlaeuterungen[i].titel} <span class="${p_i === 2 ? 'correct-text' : 'incorrect-text'}">(${p_i} / 2 Punkte)</span></h4>
+                        <p><strong>Korrekt ist: ${erlaeuterungen[i].korrekt}</strong></p>
+                        <p><em>Erklärung:</em> ${erlaeuterungen[i].text}</p>
+                    </div>`;
+            }
+
+            // Zusammenfassung anzeigen
+            const badge = document.getElementById('badgeTotal');
+            const intro = document.getElementById('ergebnisIntroText');
+            const summary = document.getElementById('summaryDetails');
+
+            if (badge) badge.innerText = `${gesamtPunkte} / ${maxPunkte} Punkte`;
+            if (intro) intro.innerHTML = `Du hast <strong>${gesamtPunkte} von ${maxPunkte} Punkten</strong> erreicht. Nachfolgend siehst du die detaillierten Musterlösungen zu jeder Aufgabe:`;
+            if (summary) summary.innerHTML = detailsHtml;
+
+            zeigeSchritt(8);
+        }
+
+        function resetTest() {
+            const form = document.getElementById('quizForm');
+            if (form) form.reset();
+            zeigeSchritt(1);
+        }
+    </script>
+</body>
+</html>
